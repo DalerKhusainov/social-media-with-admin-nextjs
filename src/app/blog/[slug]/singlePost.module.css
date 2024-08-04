@@ -44,11 +44,6 @@
   font-size: 20px;
 }
 
-.userAvatar {
-  object-fit: cover;
-  border-radius: 50%;
-}
-
 @media screen and (max-width: 768px) {
   .container {
     flex-direction: column;
