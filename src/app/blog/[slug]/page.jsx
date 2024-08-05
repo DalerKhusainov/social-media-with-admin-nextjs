@@ -4,6 +4,15 @@ import styles from "./singlePost.module.css";
 import PostUser from "@/components/postUser/page";
 import { getPost } from "@/libs/data";
 
+export async function generateMetadata({ params }) {
+  const { slug } = params;
+  const post = await getPost(slug);
+  return {
+    title: post.title,
+    description: post.desc,
+  };
+}
+
 export default async function SinglePostPage({ params }) {
   const { slug } = params;
   const post = await getPost(slug);
