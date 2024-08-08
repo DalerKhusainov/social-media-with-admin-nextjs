@@ -1,9 +1,11 @@
 "use server";
 
-import { Post } from "@/models/models";
+import { Post, User } from "@/models/models";
 import { connectToDb } from "@/utils/connectToMongoDB";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { signIn, auth, signOut } from "./auth";
+import bcrypt from "bcryptjs";
 
 export async function addPost(formData) {
   //   "use server";
@@ -40,5 +42,59 @@ export async function deletePost(formData) {
   } catch (error) {
     console.error(error);
     return { error: "Something went wrong" };
+  }
+}
+
+export async function handleGithubLogin() {
+  "use server";
+  await signIn("github");
+}
+
+export async function handleGithubLogout() {
+  "use server";
+  await signOut();
+}
+
+export async function handleRegister(formData) {
+  const { username, email, img, password, passwordRepeat } =
+    Object.fromEntries(formData);
+
+  if (password !== passwordRepeat) {
+    throw new Error("Passwords do not match");
+  }
+
+  try {
+    connectToDb();
+
+    const user = await User.findOne({ username });
+
+    if (user) {
+      return "Username already exists";
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      img,
+    });
+
+    await newUser.save();
+  } catch (err) {
+    console.error(err);
+    return { error: "Something went wrong!" };
+  }
+}
+
+export async function login(formData) {
+  const { username, password } = Object.fromEntries(formData);
+  try {
+    await signIn("credentials", { username, password });
+  } catch (err) {
+    console.error(err);
+    return { error: "Something went wrong!" };
   }
 }
