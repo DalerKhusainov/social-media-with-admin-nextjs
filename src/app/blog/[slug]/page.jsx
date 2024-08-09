@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Image from "next/image";
 import styles from "./singlePost.module.css";
-import PostUser from "@/components/postUser/page";
+import PostUser from "@/components/postUser/PostUser";
 // import { getPost } from "@/libs/data";
 
 export async function generateMetadata({ params }) {

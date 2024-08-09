@@ -55,12 +55,12 @@ export async function handleGithubLogout() {
   await signOut();
 }
 
-export async function handleRegister(formData) {
+export async function handleRegister(previousState, formData) {
   const { username, email, img, password, passwordRepeat } =
     Object.fromEntries(formData);
 
   if (password !== passwordRepeat) {
-    throw new Error("Passwords do not match");
+    return { error: "Passwords do not match" };
   }
 
   try {
@@ -69,7 +69,7 @@ export async function handleRegister(formData) {
     const user = await User.findOne({ username });
 
     if (user) {
-      return "Username already exists";
+      return { error: "Username already exists" };
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -83,18 +83,24 @@ export async function handleRegister(formData) {
     });
 
     await newUser.save();
+    return { success: true };
   } catch (err) {
     console.error(err);
     return { error: "Something went wrong!" };
   }
 }
 
-export async function login(formData) {
+export async function login(previousState, formData) {
   const { username, password } = Object.fromEntries(formData);
   try {
     await signIn("credentials", { username, password });
   } catch (err) {
-    console.error(err);
+    console.error("Crendential error is " + err.message);
+
+    if (err.message.includes("CredentialsSignin")) {
+      return { error: "Invalid username or password" };
+    }
+
     return { error: "Something went wrong!" };
   }
 }

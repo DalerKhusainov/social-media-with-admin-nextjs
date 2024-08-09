@@ -1,7 +1,8 @@
 import styles from "./loginPage.module.css";
-import { handleGithubLogin, login } from "@/libs/actions";
+import { handleGithubLogin } from "@/libs/actions";
+import LoginForm from "@/components/loginForm/LoginForm";
 
-export default async function LoginPage() {
+export default function LoginPage() {
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
@@ -10,15 +11,7 @@ export default async function LoginPage() {
         </form>
       </div>
       <div className={styles.wrapper}>
-        <form className={styles.form} action={login}>
-          <input type="text" placeholder="Enter your name" name="username" />
-          <input
-            type="password"
-            placeholder="Enter your password"
-            name="password"
-          />
-          <button>Login with Credentials</button>
-        </form>
+        <LoginForm />
       </div>
     </div>
   );

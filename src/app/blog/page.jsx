@@ -1,5 +1,5 @@
 import styles from "./blog.module.css";
-import PostCard from "@/components/postCard/page";
+import PostCard from "@/components/postCard/PostCard";
 // import { getPosts } from "@/libs/data";
 
 async function getNewPosts() {
